@@ -5,9 +5,11 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 //parse incoming string or data array
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
 //parse incoming JSON data
 app.use(express.json());
 const { animals } = require('./:data/animals');
+
 
 function filterByQuery(query, animalsArray) {
     let personalityTraitsArray = [];
@@ -52,7 +54,7 @@ function findById(id, animalsArray) {
 }
 
 function createNewAnimal(body, animalsArray) {
-    console.log(body);
+    
     //our function's main code will go here!
     const animal = body;
     animalsArray.push(animal);
@@ -92,7 +94,7 @@ app.get('/api/animals', (req, res) => {
 
 app.get('/api/animals/:id', (req, res) => {
     const result = findById(req.params.id, animals);
-    if (results) {
+    if (result) {
         res.json(result);
     } else {
         res.send(404);
@@ -113,6 +115,22 @@ app.post('/api/animals', (req, res) => {
     
     res.json(animal);
     }
+});
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'));
+});
+
+app.get('/animals', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/animals.html'));
+});
+
+app.get('/zookeepers', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/zookeepers.html'));
+});
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'));
 });
 
 app.listen(PORT, () => {
